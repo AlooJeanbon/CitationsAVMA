@@ -1,6 +1,9 @@
 # CitationsAVMA
 Citations project, Srping Boot/js
 
+Pour lancer le projet (à faire dans deux console différentes):
+  -à la racine : npm start
+  -depuis le dossier Client : npm run dev
 
 
 Connexion via discord :

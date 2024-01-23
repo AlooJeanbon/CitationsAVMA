@@ -1,0 +1,19 @@
+
+div.citationList-page{
+    background-color: rgb(172, 172, 172);
+    
+    margin-left: 15%;
+    margin-right: 15%;
+    padding-top: 3%;
+
+    padding-bottom: 3%;
+}
+
+h1.title{
+    font-family: 'Allura', cursive;
+    font-size: 1000%;
+    margin: 0 auto;
+    text-align: center;
+    text-decoration: underline;
+    padding-bottom: 3%;
+}
