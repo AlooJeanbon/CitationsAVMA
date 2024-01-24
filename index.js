@@ -86,3 +86,48 @@ const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 });
+
+// ===================================================== //
+
+const Discord = require('discord.js');
+const bot = new Discord.Client({
+  intents: [
+    Discord.GatewayIntentBits.Guilds,
+    Discord.GatewayIntentBits.GuildMessages,
+    Discord.GatewayIntentBits.MessageContent,
+    Discord.GatewayIntentBits.GuildMembers,
+  ],
+});
+// first two needed to see messages
+
+const fs = require('fs');
+bot.commands = new Discord.Collection();
+
+// [- - - - - - - ---- VARIABLES / CLASSES ---- - - - - - - -]
+
+const prefix = '²';
+
+// [- - - - - - - ---- MESSAGES GESTION ---- - - - - - - -]
+
+bot.on('messageCreate', message => {
+  if (!message.content.startsWith(prefix)) return;
+
+  const args = message.content.trim().split(/ +/g);
+  const cmd = args[0].slice(prefix.length).toLowerCase();
+
+  if (cmd === '?') return message.reply('I\'m logged in, you can manage citations');
+
+  // à enlever
+  if (cmd === 'roll') {// - - - ***************** ROLL
+    if (!args[1]) return message.reply('Specify the dice.');
+    if (args[2]) return message.reply('Stop adding useless things.');
+    if (parseInt(args[1]) === 'NaN') return message.reply('Number please.');
+    
+    // command code
+
+    return message.reply('https://tenor.com/view/marvel-you-had-one-job-loki-tom-hiddleson-gif-11509538');
+  }
+
+});
+
+bot.login(process.env.DISCORD_TOKEN);
