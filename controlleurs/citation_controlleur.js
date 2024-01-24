@@ -1,5 +1,6 @@
 // controllers/citationController.js
 const Citation = require('../models/citation');
+const User = require('../models/utilisateur');
 
 const citationController = {};
 
@@ -22,9 +23,14 @@ citationController.getSpecificCitation = async (req, res) => {
 };
 
 citationController.addNewCitation = async (req, res) => {
+
+  // On récupre l'utilisateur connecté
+  const discordId = req.user.discordId;
+  const author = await User.findOne({ discordId });
+
   const citation = new Citation({
-    discordId: req.user.discordId, // récupération de l'id de l'utilisateur connecté
-    text: req.body.text,
+    author: author._id,
+    text : req.body.text,
   });
 
   try {
@@ -37,10 +43,19 @@ citationController.addNewCitation = async (req, res) => {
 
 citationController.favoriteCitation = async (req, res) => {
   try {
-    const user = req.user;
-    user.favoriteCitations.push(req.params.id);
+    // On récupre l'utilisateur connecté
+    const discordId = req.user.discordId;
+    const user = await User.findOne({ discordId });
+
+    // On récupère l'id de citation
+    const citationId = req.params.citationId;
+
+    // On ajoute la citation aux favoris
+    user.favorites.push(citationId);
     await user.save();
-    res.json({ message: 'Citation favorited successfully' });
+
+    // Réponse indiquant que la citation a été marquée comme favorite
+    res.status(200).json({ message: 'Citation marquée comme favorite avec succès' });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
@@ -48,9 +63,14 @@ citationController.favoriteCitation = async (req, res) => {
 
 citationController.getUserFavorites = async (req, res) => {
   try {
-    const user = req.user;
-    await user.populate('favoriteCitations').execPopulate();
-    res.json(user.favoriteCitations);
+    // On récupre l'utilisateur connecté
+    const discordId = req.user.discordId;
+    const user = await User.findOne({ discordId });
+
+    // On récupre ces citations favoris
+    const favorites = await Citation.find({ _id: { $in: user.favorites } });
+
+    res.status(200).json({ favorites });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
