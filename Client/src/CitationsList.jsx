@@ -9,16 +9,13 @@ function CitationsList() {
     const [citations, setCitations] = useState([]);
 
     useEffect(() => {
-        const fetchCitations = async () => {
-            try {
-                const response = await axios.get('/citations');
-                setCitations(response.data);
-            } catch (error) {
-                console.error('Erreur lors de la récupération des données:', error);
-            }
-        };
-    
-        fetchCitations();
+        fetch("http://localhost:3000/citations/")
+            .then(res => res.json())
+            .then(
+                (result) => {
+                    setCitations(result); // Correction ici
+                }
+            )
     }, []);
 
 

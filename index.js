@@ -4,6 +4,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 const session = require('express-session');
 const passport = require('passport');
+const cors = require('cors');
 const DiscordStrategy = require('passport-discord');
 const connectDB = require('./config/database'); // Importer la configuration de la base de données
 const User = require('./models/utilisateur');
@@ -11,7 +12,7 @@ const Citation = require('./models/citation');
 
 
 const app = express();
-
+app.use(cors());
 // Middleware
 app.use(express.json());
 
