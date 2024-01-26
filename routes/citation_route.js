@@ -4,12 +4,13 @@ const citationController = require('../controlleurs/citation_controlleur');
 
 
 // Get all citations
-//router.get('/', citationController.getAllCitations);
+router.get('/', citationController.getAllCitations);
 
-//router.post('/addTest', citationController.addTest);
+// Get all citations of user
+router.get('/user/:id', citationController.getAllCitations);
 
 // Add a new citation
-//router.post('/add', citationController.addNewCitation);
+router.post('/add', citationController.addTest);
 
 router.get('/re1', citationController.addTest);
 

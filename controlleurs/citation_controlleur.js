@@ -22,16 +22,32 @@ citationController.getSpecificCitation = async (req, res) => {
   }
 };
 
+citationController.getAllCitationsOfUser = async (req, res) => {
+
+  // On récupre l'utilisateur connecté
+  const discordId = req.params.id;
+  console.log(discordId);
+  const author = await User.findOne({ discordId: discordId });
+
+  try {
+    const citations = await Citation.find({author : author});
+    res.json(citations);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
 citationController.addNewCitation = async (req, res) => {
   console.log(req);
   // On récupre l'utilisateur connecté
   const discordId = req.user.discordId;
-  const author = await User.findOne({ discordId: discordId });
   console.log(discordId);
-
+  const author = await User.findOne({ discordId: discordId });
+  
+  console.log(author);
   const citation = new Citation({
     author: author._id,
-    text : "Rien n'est vrai tout est permis",
+    text : "Il a quelque chose de magique entre toi et moi",
   });
 
   try {
