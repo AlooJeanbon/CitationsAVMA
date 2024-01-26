@@ -1,15 +1,28 @@
 # CitationsAVMA
 Citations project, Srping Boot/js
 
+ ==================================== COMMANDS ====================================
+
+All commands are prefixed by "²" (they're note case sensitive).
+
+  - [   addQuote  ]   =>    add a quote (write your code after the command)
+ex : ²addQuote there is more water in a watermelon than in a human.
+
+  ==================================== LAUNCH ====================================
+
 Pour lancer le projet (à faire dans deux console différentes):
   -à la racine : npm start
   -depuis le dossier Client : npm run dev
 
+ ==================================== INSTALLS ====================================
 
 commandes d'installation :
   - npm install
   - npm install discord.js
   - npm install vite          (dans Client)
+  - npm install nodemon
+
+ ==================================== RESSOURCES ====================================
 
 Connexion via discord :
   https://medium.com/fourscouts/spring-boot-oauth2-with-discord-as-provider-fbe81ba2a721
