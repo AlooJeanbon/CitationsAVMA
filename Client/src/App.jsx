@@ -3,6 +3,7 @@ import Accueil from './Accueil.jsx';
 import CitationsList from './CitationsList.jsx';
 import Citation from './Citation.jsx';
 import Connexion from './Connexion.jsx';
+import AddCitation from './AddCitation.jsx';
 
 function App() {
   return (
@@ -11,6 +12,7 @@ function App() {
         <Route path="/" element={<Accueil />} />
         <Route path="/citationsList" element={<CitationsList />} />
         <Route path="/citation/:citationId" element={<Citation />} />
+        <Route path="/addCitation" element={<AddCitation />} />
         <Route path="/connexion" element={<Connexion />} />
       </Routes>
     </Router>

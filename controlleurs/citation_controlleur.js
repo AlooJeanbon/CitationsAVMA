@@ -22,18 +22,23 @@ citationController.getSpecificCitation = async (req, res) => {
 };
 
 citationController.addNewCitation = async (req, res) => {
+  console.log('Requête d\'ajout de citation reçue:', req.body);
+
   const citation = new Citation({
-    discordId: req.user.discordId, // récupération de l'id de l'utilisateur connecté
+    discordId: 511315, /*req.user.discordId, // récupération de l'id de l'utilisateur connecté*/
     text: req.body.text,
   });
 
   try {
     const newCitation = await citation.save();
+    console.log('Nouvelle citation ajoutée:', newCitation);
     res.status(201).json(newCitation);
   } catch (error) {
+    console.error('Erreur lors de l\'ajout de la citation:', error);
     res.status(400).json({ message: 'Erreur lors de l\'ajout de la citation' });
   }
 };
+
 
 citationController.favoriteCitation = async (req, res) => {
   try {
