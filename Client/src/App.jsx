@@ -10,7 +10,7 @@ function App() {
       <Routes>
         <Route path="/" element={<Accueil />} />
         <Route path="/citationsList" element={<CitationsList />} />
-        <Route path="/citation" element={<Citation />} />
+        <Route path="/citation/:citationId" element={<Citation />} />
         <Route path="/connexion" element={<Connexion />} />
       </Routes>
     </Router>

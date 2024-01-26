@@ -13,11 +13,10 @@ function CitationsList() {
             .then(res => res.json())
             .then(
                 (result) => {
-                    setCitations(result); // Correction ici
+                    setCitations(result);
                 }
             )
     }, []);
-
 
   const c = (
     <div className='global'>
