@@ -87,7 +87,9 @@ app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 });
 
-// ===================================================== //
+// ============================================================================================ //
+//                                      DISCORD BOT
+// ============================================================================================ //
 
 const Discord = require('discord.js');
 const bot = new Discord.Client({
@@ -109,23 +111,35 @@ const prefix = '²';
 
 // [- - - - - - - ---- MESSAGES GESTION ---- - - - - - - -]
 
-bot.on('messageCreate', message => {
+bot.on('messageCreate', async(message) => {
   if (!message.content.startsWith(prefix)) return;
 
   const args = message.content.trim().split(/ +/g);
-  const cmd = args[0].slice(prefix.length).toLowerCase();
+  const cmd = args[0].slice(prefix.length).toLowerCase();// attention au tolowercase
 
   if (cmd === '?') return message.reply('I\'m logged in, you can manage citations');
 
   // à enlever
-  if (cmd === 'roll') {// - - - ***************** ROLL
-    if (!args[1]) return message.reply('Specify the dice.');
-    if (args[2]) return message.reply('Stop adding useless things.');
-    if (parseInt(args[1]) === 'NaN') return message.reply('Number please.');
-    
-    // command code
-
-    return message.reply('https://tenor.com/view/marvel-you-had-one-job-loki-tom-hiddleson-gif-11509538');
+  if(cmd === 'addquote'){
+    if(!args[1]) return message.reply('maybe you should write your quote ...');
+    else{
+      quote = args[1];
+      for(i = 2 ; args[i] ; i++){
+        quote += ' ' + args[i];
+      }
+      const citation = new Citation({
+        author: message.author.id,
+        text : quote,
+      });
+    // note à moi même penser à ajouter tous les mots !
+    //console.log('here' + message.author.id + "|" + quote);
+      try {
+        const newCitation = await citation.save();
+        return message.reply("\"" + newCitation + "\" saved");
+      } catch (error) {
+        return message.reply('An error has occured, praise the sun and retry');
+      }
+    }
   }
 
 });
