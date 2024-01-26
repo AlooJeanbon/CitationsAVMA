@@ -23,14 +23,15 @@ citationController.getSpecificCitation = async (req, res) => {
 };
 
 citationController.addNewCitation = async (req, res) => {
-
+  console.log(req);
   // On récupre l'utilisateur connecté
   const discordId = req.user.discordId;
-  const author = await User.findOne({ discordId });
+  const author = await User.findOne({ discordId: discordId });
+  console.log(discordId);
 
   const citation = new Citation({
     author: author._id,
-    text : req.body.text,
+    text : "Rien n'est vrai tout est permis",
   });
 
   try {
@@ -38,6 +39,30 @@ citationController.addNewCitation = async (req, res) => {
     res.status(201).json(newCitation);
   } catch (error) {
     res.status(400).json({ message: 'Erreur lors de l\'ajout de la citation' });
+  }
+};
+
+citationController.addTest = async (req, res) => {
+
+    // On récupre l'utilisateur connecté
+    const discordId = req.user.discordId;
+    
+    const author = await User.findOne({ discordId: discordId });
+    console.log(author);
+  
+    const citation = new Citation({
+      author: author._id,
+      text : "Hum bizarre ce jeu2",
+    });
+  
+    //console.log(citation);
+    
+    try {
+    const newCitation = await citation.save();
+    res.status(201).json(newCitation);
+    
+  } catch (error) {
+    res.status(400).json({ message: "Citation ajouté avec succès" });
   }
 };
 
