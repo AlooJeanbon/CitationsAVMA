@@ -7,6 +7,10 @@ All commands are prefixed by "²" (they're note case sensitive).
 
   - [   addQuote  ]   =>    add a quote (write your code after the command)
 ex : ²addQuote there is more water in a watermelon than in a human.
+  - [  seeQuotes  ]   =>    see all quotes.
+ex : ²seeQuotes
+  - [ seeQuotes @ ]   =>    see an user quote.
+ex : ²seeQuotes @Aloo_
 
   ==================================== LAUNCH ====================================
 

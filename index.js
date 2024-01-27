@@ -119,6 +119,14 @@ bot.on('messageCreate', async(message) => {
 
   if (cmd === '?') return message.reply('I\'m logged in, you can manage citations');
 
+  if(cmd === 'help'){
+    return message.reply("```\n   Commands.\n"
+    + "addQuote => write your code after that command to add it\n"
+    + "seeQuotes => see all quotes\n"
+    + "seeQuotes @user => see the user's quotes\n"
+    + "```");
+  }
+
   // =================================== ADDQUOTE =================================== //
   if(cmd === 'addquote'){
     if(!args[1]) return message.reply('maybe you should write your quote ...');
@@ -194,8 +202,28 @@ bot.on('messageCreate', async(message) => {
         }
       } else return message.reply('Specify target by pinging');
     }
-    // ------------
-    
+  }
+  // =================================== FAVORITES =================================== //
+  
+  if(cmd === 'favorites'){
+    console.log("here");
+    const id = /*"598881507116974100"*/message.author.id;
+    const url = `${websiteUrl}/citations/favorites/${id}`;
+    try {
+      const response = await fetch(url);
+      if (!response.ok)throw new Error(`HTTP error! Status: ${response.status}`);
+      const data = await response.json();
+
+      quotes = "# ======== Citations favorites ========\n‎\n```";
+      data.forEach(item => {
+        quotes += " - " + item.contenu + "\n";
+      });
+      quotes += "```\n# ========================";
+      message.reply(quotes);
+
+    } catch (error) {
+      console.error('Error fetching data:', error.message);
+    }
   }
 
 });
