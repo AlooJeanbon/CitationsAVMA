@@ -172,9 +172,11 @@ bot.on('messageCreate', async(message) => {
         rawId = args[1];
         id = rawId[2];
         for(i = 3 ; i < 20 ; i++) id += rawId[i];
+        id[16] = '0'; // à enlever quand le problème sera réglé
+        id[17] = '0';
 
         // get quotes by id
-        const url = `${websiteUrl}/citations/user/:${id}`;
+        const url = `${websiteUrl}/citations/user/${id}`;
         try {
           const response = await fetch(url);
           if (!response.ok)throw new Error(`HTTP error! Status: ${response.status}`);
