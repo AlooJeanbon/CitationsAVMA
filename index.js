@@ -1,14 +1,10 @@
 // index.js
 require('dotenv').config(); // Charger les variables d'environnement depuis le fichier .env
 const express = require('express');
-const mongoose = require('mongoose');
 const session = require('express-session');
 const passport = require('passport');
 const DiscordStrategy = require('passport-discord');
-const connectDB = require('./config/database'); // Importer la configuration de la base de données
-const User = require('./models/utilisateur');
-const Citation = require('./models/citation');
-
+const db = require('./database/db');
 
 const app = express();
 
@@ -30,45 +26,44 @@ passport.use(new DiscordStrategy({
   callbackURL: process.env.DISCORD_CALLBACK_URL,
   scope: ['identify'],
 }, async (accessToken, refreshToken, profile, done) => {
-  try {
-    let user = await User.findOne({ discordId: profile.id });
-
-    if (!user) {
-      user = new User({
-        discordId: profile.id,
-        accessToken,
-        tokenExpiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // Expiration après 7 jours
-      });
-
-      await user.save();
-    } else {
-      // Mettre à jour le token et l'expiration
-      user.accessToken = accessToken;
-      user.tokenExpiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
-      await user.save();
-    }
-
-    return done(null, user);
-  } catch (error) {
-    return done(error, null);
-  }
+    db.get("SELECT * FROM users WHERE idDiscord = ?", [profile.id], (err, row) => {
+      if (err) {
+        return done(err, null);
+      }
+      if (!row) {
+        db.run("INSERT INTO users (pseudo, token, tokenExpiration, idDiscord) VALUES (?, ?, ?, ?)", 
+        [profile.username, accessToken,  new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), profile.id], (err, row) => {
+          if (err) {
+            return done(err, null);
+          }});
+      } else {
+        db.run("UPDATE users SET token = ?, tokenExpiration = ? WHERE idDiscord = ?", 
+        [refreshToken, new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), profile.id], (err, row) => {
+          if (err) {
+            return done(err, null);
+          }});
+      }
+      return done(null, row);
+    });
 }));
 
 passport.serializeUser((user, done) => {
-  done(null, user.id);
+  done(null, user.idDiscord);
 });
 
 passport.deserializeUser(async (id, done) => {
-  try {
-    const user = await User.findById(id);
-    return done(null, user);
-  } catch (err) {
-    return done(err, null);
-  }
+  sql = "SELECT * FROM users WHERE idDiscord = ?";
+  id = id.toString();
+  db.get(sql, [id] ,(err, row) => {
+    if (err) {
+      return done(err, null);
+    }
+    if (!row) {
+      return done("User not found", null);
+    }
+    return done(null, row);
+  });
 });
-
-// Connecter à la base de données MongoDB
-connectDB();
 
 // Middleware pour ajouter l'utilisateur à chaque requête
 app.use((req, res, next) => {

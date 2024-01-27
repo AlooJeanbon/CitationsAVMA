@@ -7,20 +7,20 @@ const citationController = require('../controlleurs/citation_controlleur');
 router.get('/', citationController.getAllCitations);
 
 // Get all citations of user
-router.get('/user/:id', citationController.getAllCitations);
+router.get('/user/:id', citationController.getAllCitationsOfUser);
 
 // Add a new citation
-router.post('/add', citationController.addTest);
+router.post('/add', citationController.addNewCitation);
 
 router.get('/re1', citationController.addTest);
 
-// Get a specific citation
-router.get('/:id', citationController.getSpecificCitation);
+// Get user's favorite citations
+router.get('/favorites/:id', citationController.getUserFavorites);
 
 // Favorite a citation
-router.post('/favorite/:id', citationController.favoriteCitation);
+router.post('/favorite', citationController.favoriteCitation);
 
-// Get user's favorite citations
-router.get('/favorites', citationController.getUserFavorites);
+// Get a specific citation
+router.get('/:id', citationController.getSpecificCitation);
 
 module.exports = router;
