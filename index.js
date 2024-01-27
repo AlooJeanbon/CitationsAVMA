@@ -3,12 +3,14 @@ require('dotenv').config(); // Charger les variables d'environnement depuis le f
 const express = require('express');
 const session = require('express-session');
 const passport = require('passport');
+const cors = require('cors');
 const DiscordStrategy = require('passport-discord');
 const db = require('./database/db');
 
 const app = express();
 
 // Middleware
+app.use(cors());
 app.use(express.json());
 
 app.use(session({

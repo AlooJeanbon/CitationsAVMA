@@ -9,18 +9,14 @@ function CitationsList() {
     const [citations, setCitations] = useState([]);
 
     useEffect(() => {
-        const fetchCitations = async () => {
-            try {
-                const response = await axios.get('/citations');
-                setCitations(response.data);
-            } catch (error) {
-                console.error('Erreur lors de la récupération des données:', error);
-            }
-        };
-    
-        fetchCitations();
+        fetch("http://localhost:3000/citations/")
+            .then(res => res.json())
+            .then(
+                (result) => {
+                    setCitations(result);
+                }
+            )
     }, []);
-
 
   const c = (
     <div className='global'>
@@ -28,9 +24,9 @@ function CitationsList() {
         <div className='citationList-page'>
             <h1 className='title'>All citations</h1>
             <ul>
-                {(Array.isArray(citations) ? citations : []).map((citation) => (
-                    <li><a href={`/citation/${citation._id}`} className='button'>{citation.text}</a></li>
-                ))}
+            {(Array.isArray(citations) ? citations : []).map((citation, index) => (
+                <li key={citation.id || index}><a href={`/citation/${citation.id}`} className='button'>{citation.contenu}</a></li>
+            ))}
             </ul>
         </div>
         <BottomPage />
