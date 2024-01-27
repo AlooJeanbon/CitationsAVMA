@@ -102,9 +102,12 @@ const bot = new Discord.Client({
 const fs = require('fs');
 bot.commands = new Discord.Collection();
 
+
 // [- - - - - - - ---- VARIABLES / CLASSES ---- - - - - - - -]
 
 const prefix = '²';
+const websiteUrl = 'http://localhost:3000';
+
 
 // [- - - - - - - ---- MESSAGES GESTION ---- - - - - - - -]
 
@@ -116,7 +119,7 @@ bot.on('messageCreate', async(message) => {
 
   if (cmd === '?') return message.reply('I\'m logged in, you can manage citations');
 
-  // à enlever
+  // =================================== ADDQUOTE =================================== //
   if(cmd === 'addquote'){
     if(!args[1]) return message.reply('maybe you should write your quote ...');
     else{
@@ -124,19 +127,73 @@ bot.on('messageCreate', async(message) => {
       for(i = 2 ; args[i] ; i++){
         quote += ' ' + args[i];
       }
-      const citation = new Citation({
-        author: message.author.id,
-        text : quote,
-      });
-    // note à moi même penser à ajouter tous les mots !
-    //console.log('here' + message.author.id + "|" + quote);
+      // --------
+      const url = `${websiteUrl}/citations/add`;
+      console.log(url);
       try {
-        const newCitation = await citation.save();
-        return message.reply("\"" + newCitation + "\" saved");
+        const response = await fetch(url, { method: 'POST',
+          headers: {'Content-Type': 'application/json',},
+          body: JSON.stringify({
+            texte: quote,
+            idDiscord: message.author.id,}),
+        });
+    
+        if (response.ok) console.log('Citation added successfully.');
+        else console.error('Error adding citation:', response.statusText);
       } catch (error) {
-        return message.reply('An error has occured, praise the sun and retry');
+        console.error('Error:', error.message);
       }
     }
+  }
+  // =================================== SEEQUOTES =================================== //
+  if(cmd === 'seequotes'){
+    
+    if (!args[1]){ // display all quotes
+      const url = `${websiteUrl}/citations`;
+      try {
+        const response = await fetch(url);
+        if (!response.ok)throw new Error(`HTTP error! Status: ${response.status}`);
+        const data = await response.json();
+  
+        quotes = "# ======== Citations========\n‎\n```";
+        data.forEach(item => {
+          quotes += " - " + item.contenu + "\n";
+        });
+        quotes += "```\n# ========================";
+        message.reply(quotes);
+  
+      } catch (error) {
+        console.error('Error fetching data:', error.message);
+      }
+    }else{ //
+      let target = args[1];
+      if(target[1] === '@'){
+        // clean id
+        rawId = args[1];
+        id = rawId[2];
+        for(i = 3 ; i < 20 ; i++) id += rawId[i];
+
+        // get quotes by id
+        const url = `${websiteUrl}/citations/user/:${id}`;
+        try {
+          const response = await fetch(url);
+          if (!response.ok)throw new Error(`HTTP error! Status: ${response.status}`);
+          const data = await response.json();
+  
+          quotes = "# ======== Citations ========\n‎\n```";
+          data.forEach(item => {
+            quotes += " - " + item.contenu + "\n";
+          });
+          quotes += "```\n# ========================";
+          message.reply(quotes);
+  
+        } catch (error) {
+          console.error('Error fetching data:', error.message);
+        }
+      } else return message.reply('Specify target by pinging');
+    }
+    // ------------
+    
   }
 
 });
