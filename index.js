@@ -124,6 +124,7 @@ bot.on('messageCreate', async(message) => {
     + "addQuote => write your code after that command to add it\n"
     + "seeQuotes => see all quotes\n"
     + "seeQuotes @user => see the user's quotes\n"
+    + "favorites => see your favorites\n"
     + "```");
   }
 

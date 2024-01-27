@@ -11,6 +11,8 @@ ex : ²addQuote there is more water in a watermelon than in a human.
 ex : ²seeQuotes
   - [ seeQuotes @ ]   =>    see an user quote.
 ex : ²seeQuotes @Aloo_
+  - [  favorites  ]   =>    see your favorites.
+ex : ²favorites
 
   ==================================== LAUNCH ====================================
 
