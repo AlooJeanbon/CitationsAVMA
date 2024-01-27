@@ -20,6 +20,7 @@ function TopPage(){
                 <li><a href='/' className='button'>Accueil</a></li>
                 <li><a href='/citationsList' className='button'>Citations</a></li>
                 <li><a href='/addCitation' className='button'>Ajouter</a></li>
+                <li><a href='/favorites' className='button'>Favoris</a></li>
                 <li><a onClick={handleDiscordLogin} className='button'>Connexion</a></li>
             </nav>
         </div>
