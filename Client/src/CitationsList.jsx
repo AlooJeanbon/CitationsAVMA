@@ -46,16 +46,13 @@ function CitationsList() {
         try {
             const idDiscord = '598881507116974100'; // Remplacez par l'ID Discord de l'utilisateur connecté
             
-            // Vérifiez d'abord si la citation est déjà ajoutée aux favoris de l'utilisateur
             const favoritesResponse = await axios.get(`http://localhost:3000/citations/favorites/${idDiscord}`);
             const userFavorites = favoritesResponse.data;
     
-            // Vérifiez si la citation est déjà dans les favoris de l'utilisateur
             const isAlreadyAdded = userFavorites.some(favorite => favorite.id === idCitation);
     
             if (isAlreadyAdded) {
                 console.log('La citation est déjà ajoutée aux favoris.');
-                // Afficher un message à l'utilisateur ou ignorer l'action d'ajout
             } else {
                 // Ajoutez la citation aux favoris
                 const response = await axios.post('http://localhost:3000/citations/favorite', {
@@ -63,7 +60,6 @@ function CitationsList() {
                     idDiscord: idDiscord
                 });
                 console.log('Citation ajoutée aux favoris:', response.data);
-                // Rafraîchir la liste des citations après l'ajout aux favoris
                 fetchCitations();
             }
         } catch (error) {

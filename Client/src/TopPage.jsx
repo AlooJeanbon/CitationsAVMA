@@ -12,7 +12,6 @@ function TopPage() {
 
     const checkLoginStatus = async () => {
         try {
-            // Vérifier si l'utilisateur est connecté en interrogeant le backend
             const response = await axios.get('http://localhost:3000/utilisateur/profile');
             const profileData = response.data;
             console.error('Erreur lors de la récupération de l\'URL d\'authentification Discord:', profileData);

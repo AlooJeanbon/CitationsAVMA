@@ -1,5 +1,7 @@
 # CitationsAVMA
-Citations project, Srping Boot/js
+Amélie BRETON, Valentin DEBONNEFOY, Andrey DEMIDOV, Mélissa MARCO 
+
+Citations project, React/Express
 
  ==================================== COMMANDS ====================================
 

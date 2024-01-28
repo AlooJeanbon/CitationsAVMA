@@ -3,24 +3,22 @@ const router = express.Router();
 const citationController = require('../controlleurs/citation_controlleur');
 
 
-// Get all citations
+// Renvoie toutes les citations
 router.get('/', citationController.getAllCitations);
 
-// Get all citations of user
+// Renvoie les citations d'un utilisateur
 router.get('/user/:id', citationController.getAllCitationsOfUser);
 
-// Add a new citation
+// Ajoute une citation
 router.post('/add', citationController.addNewCitation);
 
-router.get('/re1', citationController.addTest);
-
-// Get user's favorite citations
+// Renvoie les citations favorites d'un utilisateur
 router.get('/favorites/:id', citationController.getUserFavorites);
 
-// Favorite a citation
+// Ajoute une citation en favoris
 router.post('/favorite', citationController.favoriteCitation);
 
-// Get a specific citation
+// Renvoie une citation
 router.get('/:id', citationController.getSpecificCitation);
 
 module.exports = router;

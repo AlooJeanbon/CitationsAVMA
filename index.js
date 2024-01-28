@@ -1,20 +1,16 @@
-// index.js
 require('dotenv').config(); // Charger les variables d'environnement depuis le fichier .env
 const express = require('express');
 const session = require('express-session');
 const passport = require('passport');
 const cors = require('cors');
-const DiscordStrategy = require('passport-discord');
-const db = require('./database/db');
-const jwt = require('jsonwebtoken');
-const userController = require('./controlleurs/utilisateur_controlleur');
-
+const cookieParser = require('cookie-parser');
 const app = express();
 
 
 // Middleware
 app.use(cors());
 app.use(express.json());
+app.use(cookieParser());
 
 app.use(session({
   secret: process.env.SESSION_SECRET,
@@ -23,67 +19,6 @@ app.use(session({
 }));
 app.use(passport.initialize());
 app.use(passport.session());
-
-// Passport Configuration
-passport.use(new DiscordStrategy({
-  clientID: process.env.DISCORD_CLIENT_ID,
-  clientSecret: process.env.DISCORD_CLIENT_SECRET,
-  callbackURL: process.env.DISCORD_CALLBACK_URL,
-  scope: ['identify'],
-}, async (accessToken, refreshToken, profile, done) => {
-  const secretKey = process.env.CLE;
-  const payload = {
-    idDiscord: profile.id
-  };
-  const options = {
-    expiresIn: '3h',
-  };
-  const token = jwt.sign(payload, secretKey, options);
-
-  db.get("SELECT * FROM users WHERE idDiscord = ?", [profile.id], (err, row) => {
-    if (err) {
-      return done(err, null);
-    }
-    if (!row) {
-      db.run("INSERT INTO users (pseudo, token, idDiscord) VALUES (?, ?, ?)", 
-      [profile.username, token, profile.id], (err, row) => {
-        if (err) {
-          return done(err, null);
-        }});
-    } else {
-      db.run("UPDATE users SET token = ? WHERE idDiscord = ?", 
-      [token, profile.id], (err, row) => {
-        if (err) {
-          return done(err, null);
-        }});
-    }
-    return done(null, row);
-  });
-}));
-
-passport.serializeUser((user, done) => {
-  done(null, user.idDiscord);
-});
-
-passport.deserializeUser(async (id, done) => {
-  sql = "SELECT * FROM users WHERE idDiscord = ?";
-  id = id.toString();
-  db.get(sql, [id] ,(err, row) => {
-    if (err) {
-      return done(err, null);
-    }
-    if (!row) {
-      return done("User not found", null);
-    }
-    return done(null, row);
-  });
-});
-
-// Middleware pour ajouter l'utilisateur à chaque requête
-app.use((req, res, next) => {
-  res.locals.user = userController.user;
-  next();
-});
 
 // Autres configurations et middleware Express
 const apiRouter = require("./routes/api");
