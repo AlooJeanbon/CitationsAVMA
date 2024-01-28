@@ -27,6 +27,16 @@ commandes d'installation :
   - npm install discord.js
   - npm install vite          (dans Client)
   - npm install nodemon
+  - npm install axios
+
+ ====================================    NOTES   ====================================
+ 
+ quasiment tous les paramètres de connexion à discord sont en durs et complexes à
+ modifier, dans l'idéal il faudrait en faire des constantes.
+ l'url localhost apprait en dur dans
+  - utilisateur_controlleur.js => userController.loginRedirect        (1 fois)
+  - TopPage.jsx                                                       (1 fois)
+
 
  ==================================== RESSOURCES ====================================
 

@@ -21,7 +21,7 @@ function TopPage(){
                 <li><a href='/citationsList' className='button'>Citations</a></li>
                 <li><a href='/addCitation' className='button'>Ajouter</a></li>
                 <li><a href='/favorites' className='button'>Favoris</a></li>
-                <li><a onClick={handleDiscordLogin} className='button'>Connexion</a></li>
+                <li><a href='https://discord.com/api/oauth2/authorize?client_id=1181168268900315136&response_type=code&redirect_uri=http%3A%2F%2Flocalhost%3A3000%2Futilisateur%2Flogin%2Fredirect&scope=identify'/*onClick={handleDiscordLogin}*/ className='button'>Connexion</a></li>
             </nav>
         </div>
     );
