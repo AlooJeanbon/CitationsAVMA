@@ -1,8 +1,16 @@
-
+img.logo{
+    
+    height: 130%;
+    width : auto;
+    display: flex;
+    margin-left: 3%;
+    margin-top: -13px;
+}
 div.top-page{
     background-color: rgb(100, 172, 255);
     height: 80px;
     padding: 25px;
+    display: flex;
 }
 
 

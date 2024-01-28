@@ -3,13 +3,16 @@ import BottomPage from './BottomPage.jsx'
 
 import './CSS/Accueil.css'
 import img from './assets/albert-einstein-citation-anti-gravite.png'
+import logo from './assets/bigLogo.png'
 
 function Accueil(){
     const accueilPage = (
         <div>
             <TopPage />
             <div className='accueil-page'>
-                <h1 className='title'>Citation's</h1>
+                <div className='image-container'>
+                    <img src={logo} alt='' className='LogoTitle'/>
+                </div>
                 <div className='image-container'>
                     <img src={img} alt='' className='CitationImage'/>
                 </div>

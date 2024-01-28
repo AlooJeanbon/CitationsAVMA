@@ -5,7 +5,7 @@ div.accueil-page{
     
     margin-left: 15%;
     margin-right: 15%;
-    padding-top: 3%;
+    padding-top: 1%;
 
     padding-bottom: 3%;
 
@@ -29,7 +29,12 @@ div.image-container{
     text-align: center;
 }
 
-img{
+img.LogoTitle{
+    width: 50%;
+    height: auto;
+}
+
+img.CitationImage{
     border-radius: 30px;
     width: 100%;
     height: auto;

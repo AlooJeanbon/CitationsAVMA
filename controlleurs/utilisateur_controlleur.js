@@ -57,22 +57,22 @@ userController.loginRedirect = async (req, res) => {
 
       db.get("SELECT * FROM users WHERE idDiscord = ?", [userinfo.data.id], (err, row) => {
         if (err) {
-          return done(err, null);
+          return res.status(500).json({ error: err.message });
         }
         if (!row) {
           db.run("INSERT INTO users (pseudo, token, idDiscord) VALUES (?, ?, ?)", 
           [userinfo.data.username, token, userinfo.data.id], (err, row) => {
             if (err) {
-              return done(err, null);
+              return res.status(500).json({ error: err.message });
             }});
         } else {
           db.run("UPDATE users SET token = ? WHERE idDiscord = ?", 
           [token, userinfo.data.id], (err, row) => {
             if (err) {
-              return done(err, null);
+              return res.status(500).json({ error: err.message });
             }});
         }
-        return done(null, row);
+        return res.status(200).json(row);
       });
     }
   }
@@ -122,7 +122,15 @@ userController.logout = (req, res) => {
 };
 
 userController.getUserProfile = (req, res) => {
-  res.json({ user: req.user });
+  // Vérifier si l'utilisateur est connecté
+  if (req.isAuthenticated()) {
+    // Utilisateur connecté, accéder à ses informations via req.user
+    const user = req.user;
+    res.json({ user });
+} else {
+    // Utilisateur non connecté, renvoyer une erreur ou rediriger vers la page de connexion
+    res.status(401).json({ message: 'Unauthorized' });
+}
 };
 
 module.exports = userController;
