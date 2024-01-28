@@ -19,8 +19,4 @@ router.get('/logout', userController.logout);
 // Get user profile
 router.get('/profile', userController.getUserProfile);
 
-
-// Ajouter un user manuellement
-router.post('/add', userController.addUser);
-
 module.exports = router;

@@ -47,25 +47,21 @@ userController.loginRedirect = async (req, res) => {
       console.log(userinfo.data.id);
 
       const secretKey = process.env.CLE;
-
       const payload = {
         idDiscord: userinfo.data.id
       };
-
       const options = {
         expiresIn: '3h',
       };
-
       const token = jwt.sign(payload, secretKey, options);
 
-      console.log('Token généré :', token);
       db.get("SELECT * FROM users WHERE idDiscord = ?", [userinfo.data.id], (err, row) => {
         if (err) {
           return done(err, null);
         }
         if (!row) {
-          db.run("INSERT INTO users (pseudo, token, idDiscord) VALUES (?, ?, ?, ?)", 
-          [userinfo.data.username, accessToken, userinfo.data.id], (err, row) => {
+          db.run("INSERT INTO users (pseudo, token, idDiscord) VALUES (?, ?, ?)", 
+          [userinfo.data.username, token, userinfo.data.id], (err, row) => {
             if (err) {
               return done(err, null);
             }});
@@ -127,23 +123,6 @@ userController.logout = (req, res) => {
 
 userController.getUserProfile = (req, res) => {
   res.json({ user: req.user });
-};
-
-// Contrôleur pour ajouter un nouvel utilisateur
-userController.addUser = (req, res) => {
-  const { idDiscord, pseudo, token } = req.body;
-  if (!pseudo || !token || !idDiscord) {
-    return res.status(400).json({ error: "Tout les champs ne sont pas remplis." });
-  }
-
-  db.run("INSERT INTO users (idDiscord, pseudo, token, tokenExpiration) VALUES (?, ?, ?, ?)", 
-  [idDiscord, pseudo, token, new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)], function(err) {
-    if (err) {
-      return res.status(500).json({ error: err.message });
-    }
-
-    res.status(200).json({ message: "Citation ajoutée", id: this.lastID });
-  });
 };
 
 module.exports = userController;

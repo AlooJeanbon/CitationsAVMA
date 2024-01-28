@@ -6,7 +6,7 @@ const db = new sqlite3.Database(dbPath);
 
 // Créer la table 'users' si elle n'existe pas
 db.serialize(() => {
-  db.run("CREATE TABLE IF NOT EXISTS users (idDiscord INTEGER PRIMARY KEY, pseudo TEXT, token TEXT, tokenExpiration DATE)");
+  db.run("CREATE TABLE IF NOT EXISTS users (idDiscord INTEGER PRIMARY KEY, pseudo TEXT, token TEXT)");
 
   // Créer la table 'citations' si elle n'existe pas
   db.run("CREATE TABLE IF NOT EXISTS citations (id INTEGER PRIMARY KEY AUTOINCREMENT, contenu TEXT, publication DATE, userId INTEGER, FOREIGN KEY (userId) REFERENCES users(idDiscord))");

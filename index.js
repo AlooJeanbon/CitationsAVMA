@@ -6,6 +6,7 @@ const passport = require('passport');
 const cors = require('cors');
 const DiscordStrategy = require('passport-discord');
 const db = require('./database/db');
+const jwt = require('jsonwebtoken');
 
 const app = express();
 
@@ -28,25 +29,34 @@ passport.use(new DiscordStrategy({
   callbackURL: process.env.DISCORD_CALLBACK_URL,
   scope: ['identify'],
 }, async (accessToken, refreshToken, profile, done) => {
-    db.get("SELECT * FROM users WHERE idDiscord = ?", [profile.id], (err, row) => {
-      if (err) {
-        return done(err, null);
-      }
-      if (!row) {
-        db.run("INSERT INTO users (pseudo, token, tokenExpiration, idDiscord) VALUES (?, ?, ?, ?)", 
-        [profile.username, accessToken,  new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), profile.id], (err, row) => {
-          if (err) {
-            return done(err, null);
-          }});
-      } else {
-        db.run("UPDATE users SET token = ?, tokenExpiration = ? WHERE idDiscord = ?", 
-        [refreshToken, new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), profile.id], (err, row) => {
-          if (err) {
-            return done(err, null);
-          }});
-      }
-      return done(null, row);
-    });
+  const secretKey = process.env.CLE;
+  const payload = {
+    idDiscord: profile.id
+  };
+  const options = {
+    expiresIn: '3h',
+  };
+  const token = jwt.sign(payload, secretKey, options);
+
+  db.get("SELECT * FROM users WHERE idDiscord = ?", [profile.id], (err, row) => {
+    if (err) {
+      return done(err, null);
+    }
+    if (!row) {
+      db.run("INSERT INTO users (pseudo, token, idDiscord) VALUES (?, ?, ?)", 
+      [profile.username, token, profile.id], (err, row) => {
+        if (err) {
+          return done(err, null);
+        }});
+    } else {
+      db.run("UPDATE users SET token = ? WHERE idDiscord = ?", 
+      [token, profile.id], (err, row) => {
+        if (err) {
+          return done(err, null);
+        }});
+    }
+    return done(null, row);
+  });
 }));
 
 passport.serializeUser((user, done) => {

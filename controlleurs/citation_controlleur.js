@@ -4,22 +4,6 @@ require('dotenv').config();
 
 const citationController = {};
 
-function verifyToken(idDiscord){
-  db.get("SELECT * FROM users WHERE id = ?", [idDiscord], (err, row) => {
-    if (err) {
-      return false;
-    } else {
-      jwt.verify(row.token, process.env.CLE, (err, decoded) => {
-        if (err) {
-          return false;
-        } else {
-          return decoded.idDiscord == row.idDiscord;
-        }
-      });
-    }
-  });
-};
-
 // Contrôleur pour obtenir toutes les citations
 citationController.getAllCitations = (req, res) => {
   db.all("SELECT * FROM citations", (err, rows) => {
@@ -31,6 +15,7 @@ citationController.getAllCitations = (req, res) => {
   });
 };
 
+//Contrôleur pour obtenir toutes les citations d'un utilisateur
 citationController.getAllCitationsOfUser = async (req, res) => {
   if (!req.params.id) {
     return res.status(400).json({ error: "L'identifiant Discord est requis dans les paramètres de la requête." });
@@ -50,18 +35,28 @@ citationController.addNewCitation = (req, res) => {
   if (!texte || !idDiscord) {
     return res.status(400).json({ error: "Les champs 'content' et 'userId' sont requis." });
   }
-  if (verifyToken(idDiscord)){
-    db.run("INSERT INTO citations (contenu, publication, userId) VALUES (?, ?, ?)", 
-    [texte, new Date(Date.now()), idDiscord], function(err) {
-    if (err) {
-      return res.status(500).json({ error: err.message });
+  db.get("SELECT * FROM users WHERE idDiscord = ?", [idDiscord], (err, row) => {
+    if (!err) {
+      jwt.verify(row.token, process.env.CLE, (err, decoded) => {
+        if (!err) {
+          console.log(decoded.idDiscord);
+          console.log(row.idDiscord);
+          if (decoded.idDiscord == row.idDiscord){
+            db.run("INSERT INTO citations (contenu, publication, userId) VALUES (?, ?, ?)", 
+            [texte, new Date(Date.now()), idDiscord], function(err) {
+            if (err) {
+              return res.status(500).json({ error: err.message });
+            }
+        
+            res.status(200).json({ message: "Citation ajoutée", id: this.lastID });
+            });
+          } else {
+            return res.status(500).json({ error: "Utilisateur non identifié" });
+          }
+        }
+      });
     }
-
-    res.status(200).json({ message: "Citation ajoutée", id: this.lastID });
-    });
-  } else {
-    return res.status(500).json({ error: "Utilisateur non identifié" });
-  }
+  });
 };
 
 citationController.addTest = async (req, res) => {
@@ -86,19 +81,26 @@ citationController.favoriteCitation = async (req, res) => {
   if (!idCitation || !idDiscord) {
     return res.status(400).json({ error: "Les champs 'idCitation' et 'userId' sont requis." });
   }
-  if (verifyToken(idDiscord)){
-    db.run("INSERT INTO favoris (userId, citationId) VALUES (?, ?)", 
-    [idDiscord, idCitation], function(err) {
-      if (err) {
-        return res.status(500).json({ error: err.message });
-      }
-
-      res.status(200).json({ message: "Favoris ajoutée", id: idCitation });
-    });
-  } else {
-    return res.status(500).json({ error: "Utilisateur non identifié" });
-  }
-};
+  db.get("SELECT * FROM users WHERE idDiscord = ?", [idDiscord], (err, row) => {
+    if (!err) {
+      jwt.verify(row.token, process.env.CLE, (err, decoded) => {
+        if (!err) {
+          console.log(decoded.idDiscord);
+          console.log(row.idDiscord);
+          if (decoded.idDiscord == row.idDiscord){
+            db.run("INSERT INTO favoris (userId, citationId) VALUES (?, ?)", 
+            [idDiscord, idCitation], function(err) {
+              if (err) {
+                return res.status(500).json({ error: err.message });
+              }
+              res.status(200).json({ message: "Favoris ajoutée", id: idCitation });
+            });
+          }
+        }
+      });
+    }  
+  });
+}
 
 // Contrôleur pour obtenir les citations favorites d'un utilisateur par son identifiant Discord
 citationController.getUserFavorites = (req, res) => {
@@ -106,27 +108,35 @@ citationController.getUserFavorites = (req, res) => {
   if (!idDiscord) {
     return res.status(400).json({ error: "L'identifiant Discord est requis dans les paramètres de la requête." });
   }
-  if (verifyToken(idDiscord)){
-    // Utilisez une requête SQL pour récupérer les citations favorites de l'utilisateur
-    const query = `
-      SELECT citations.id, citations.contenu, citations.publication
-      FROM citations
-      JOIN favoris ON citations.id = favoris.citationId
-      JOIN users ON users.idDiscord = favoris.userId
-      WHERE users.idDiscord = ?
-    `;
+  db.get("SELECT * FROM users WHERE idDiscord = ?", [idDiscord], (err, row) => {
+    if (!err) {
+      jwt.verify(row.token, process.env.CLE, (err, decoded) => {
+        if (!err) {
+          console.log(decoded.idDiscord);
+          console.log(row.idDiscord);
+          if (decoded.idDiscord == row.idDiscord){
+            // Utilisez une requête SQL pour récupérer les citations favorites de l'utilisateur
+            const query = `
+              SELECT citations.id, citations.contenu, citations.publication
+              FROM citations
+              JOIN favoris ON citations.id = favoris.citationId
+              JOIN users ON users.idDiscord = favoris.userId
+              WHERE users.idDiscord = ?
+            `;
 
-    db.all(query, [idDiscord], (err, rows) => {
-      if (err) {
-        return res.status(500).json({ error: err.message });
-      }
+            db.all(query, [idDiscord], (err, rows) => {
+              if (err) {
+                return res.status(500).json({ error: err.message });
+              }
 
-      res.json(rows);
-    });
-  } else {
-    return res.status(500).json({ error: "Utilisateur non identifié" });
-  }
-};
+              res.json(rows);
+            });
+          }
+        }
+      });
+    }
+  });
+}
 
 citationController.getSpecificCitation = async (req, res) => {
   if (!req.params.id) {
