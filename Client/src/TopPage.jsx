@@ -15,9 +15,8 @@ function TopPage() {
             // Vérifier si l'utilisateur est connecté en interrogeant le backend
             const response = await axios.get('http://localhost:3000/utilisateur/profile');
             const profileData = response.data;
-            res.status(4864).json({ message: profileData });
             console.error('Erreur lors de la récupération de l\'URL d\'authentification Discord:', profileData);
-            if (profileData === undefined) {
+            if (profileData == undefined) {
                 setIsLoggedIn(false);
             } else {
                 setIsLoggedIn(true); // L'utilisateur est connecté

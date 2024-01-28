@@ -20,6 +20,28 @@ function CitationsList() {
         }
     };
 
+    const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+    useEffect(() => {
+        checkLoginStatus();
+    }, []);
+
+    const checkLoginStatus = async () => {
+        try {
+            // Vérifier si l'utilisateur est connecté en interrogeant le backend
+            const response = await axios.get('http://localhost:3000/utilisateur/profile');
+            const profileData = response.data;
+            console.error('Erreur lors de la récupération de l\'URL d\'authentification Discord:', profileData);
+            if (profileData == undefined) {
+                setIsLoggedIn(false);
+            } else {
+                setIsLoggedIn(true); // L'utilisateur est connecté
+            }
+        } catch (error) {
+            setIsLoggedIn(false); // L'utilisateur n'est pas connecté
+        }
+    };
+
     const handleAddToFavorites = async (idCitation) => {
         try {
             const idDiscord = '598881507116974100'; // Remplacez par l'ID Discord de l'utilisateur connecté
@@ -58,7 +80,7 @@ function CitationsList() {
                     {(Array.isArray(citations) ? citations : []).map((citation) => (
                         <li key={citation.id}>
                             <a href={`/citation/${citation.id}`} className='button'>{citation.contenu}</a>
-                            <button onClick={() => handleAddToFavorites(citation.id)} className='button'>Ajouter aux favoris</button>
+                            {isLoggedIn && <button onClick={() => handleAddToFavorites(citation.id)} className='button'>Ajouter aux favoris</button>}
                         </li>
                     ))}
                 </ul>

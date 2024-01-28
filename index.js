@@ -7,8 +7,10 @@ const cors = require('cors');
 const DiscordStrategy = require('passport-discord');
 const db = require('./database/db');
 const jwt = require('jsonwebtoken');
+const userController = require('./controlleurs/utilisateur_controlleur');
 
 const app = express();
+
 
 // Middleware
 app.use(cors());
@@ -79,7 +81,7 @@ passport.deserializeUser(async (id, done) => {
 
 // Middleware pour ajouter l'utilisateur à chaque requête
 app.use((req, res, next) => {
-  res.locals.user = req.user;
+  res.locals.user = userController.user;
   next();
 });
 
