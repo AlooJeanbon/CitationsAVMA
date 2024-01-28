@@ -11,6 +11,8 @@ router.get('/login/discord/callback',
   userController.handleDiscordCallback
 );
 
+router.get('/login/redirect', userController.loginRedirect);
+
 // Logout
 router.get('/logout', userController.logout);
 
