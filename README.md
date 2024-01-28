@@ -45,3 +45,14 @@ Connexion via discord :
   https://github.com/fourscouts/blog/tree/master/oauth2-discord
 id discord / id secret :
   https://support.heateor.com/discord-client-id-discord-client-secret/
+
+Vidéo d'explication sur la mise en place de la connexion via discord :
+  https://www.youtube.com/watch?v=WgyCcXotReU
+
+  Résumé : on configure le bot pour qu'en appelant une url donnée on obtienne un code, après
+  être passés par l'url nous sommes renvoyés sur note site avec un passe droit (le code).
+
+  Notre site -> appui sur le bouton connexion -> passage par discord (via notre bot)
+  -> retour sur notre site avec notre code -> récupération des données de l'utilisateur
+  grâce à l'autorisation fournie par le code
+

@@ -42,7 +42,8 @@ userController.loginRedirect = async (req, res) => {
         }
       });
 
-      console.log(output.data, userinfo.data);
+      //console.log(output.data, userinfo.data);
+      console.log(userinfo.data.id);
     }
   }
 };
