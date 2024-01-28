@@ -18,7 +18,7 @@ userController.getUserProfile = (req, res) => {
 // Contrôleur pour ajouter un nouveau utilisateur
 userController.addUser = (req, res) => {
   const { idDiscord, pseudo, token } = req.body;
-  if (!texte || !idDiscord) {
+  if (!pseudo || !token || !idDiscord) {
     return res.status(400).json({ error: "Tout les champs ne sont pas remplis." });
   }
 
