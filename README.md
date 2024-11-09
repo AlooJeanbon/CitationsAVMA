@@ -1,5 +1,5 @@
 # CitationsAVMA
-Amélie BRETON, Valentin DEBONNEFOY, Andrey DEMIDOV, Mélissa MARCO 
+-, Valentin DEBONNEFOY, Andrey DEMIDOV, Mélissa MARCO 
 
 Citations project, React/Express
 
